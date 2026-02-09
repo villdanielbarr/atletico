@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#FFFFFF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Atlético">
+    <title>Atlético</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-primary: #FAFAFA;
+            --bg-card: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6B6B6B;
+            --text-tertiary: #A0A0A0;
+            --accent: #000000;
+            --border: #EEEEEE;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.1);
+            --success: #00B341;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 48px 32px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .login-subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin-bottom: 12px;
+        }
+
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+
+        .login-btn.secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+
+        .error-message {
+            background: #FFE5E5;
+            color: #D32F2F;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-primary);
+            z-index: 1000;
+            padding: env(safe-area-inset-top) 0 0 0;
+        }
+
+        .header-content {
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .menu-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .main-content {
+            padding-top: calc(80px + env(safe-area-inset-top));
+            padding-bottom: 40px;
+            max-width: 100%;
+            display: none;
+        }
+
+        .main-content.show {
+            display: block;
+        }
+
+        .day-info {
+            padding: 0 24px 24px;
+        }
+
+        .day-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .day-title {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+        }
+
+        .day-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .week-selector {
+            padding: 0 24px 32px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .week-selector::-webkit-scrollbar {
+            display: none;
+        }
+
+        .day-pill {
+            flex-shrink: 0;
+            padding: 12px 24px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow);
+        }
+
+        .day-pill:active {
+            transform: scale(0.95);
+        }
+
+        .day-pill.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .exercise-list {
+            padding: 0 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+        }
+
+        .warmup-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .warmup-section {
+            margin-bottom: 12px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: var(--bg-primary);
+        }
+
+        .warmup-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .warmup-section-header {
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .warmup-section-header:active {
+            background: var(--border);
+        }
+
+        .warmup-section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .warmup-expand-icon {
+            font-size: 18px;
+            color: var(--text-tertiary);
+            transition: transform 0.3s ease;
+        }
+
+        .warmup-section.expanded .warmup-expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .warmup-exercises {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .warmup-section.expanded .warmup-exercises {
+            max-height: 500px;
+        }
+
+        .warmup-exercises-inner {
+            padding: 0 16px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .warmup-exercise {
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .exercise-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .exercise-card:active {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .exercise-header {
+            padding: 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .exercise-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .exercise-name {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .exercise-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .meta-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: var(--bg-primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .muscle-tag {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .expand-icon {
+            font-size: 20px;
+            color: var(--text-tertiary);
+            transition: transform 0.3s ease;
+            margin-top: 4px;
+        }
+
+        .exercise-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .exercise-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .exercise-card.expanded .exercise-details {
+            max-height: 2000px;
+        }
+
+        .exercise-body {
+            padding: 0 24px 24px;
+        }
+
+        .exercise-notes {
+            padding: 16px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .notes-title {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .sets-header {
+            display: grid;
+            grid-template-columns: 32px 1fr 1fr 44px;
+            gap: 6px;
+            padding: 0 0 12px;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        .header-cell {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-tertiary);
+        }
+
+        .sets-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .set-row {
+            display: grid;
+            grid-template-columns: 32px 1fr 1fr 44px;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .set-number {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .set-input {
+            padding: 10px 6px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            background: var(--bg-card);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.2s ease;
+            min-width: 0;
+            width: 100%;
+        }
+
+        .set-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .set-input::placeholder {
+            color: var(--text-tertiary);
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .set-checkbox {
+            width: 44px;
+            height: 44px;
+            border: 3px solid var(--border);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-card);
+            flex-shrink: 0;
+        }
+
+        .set-checkbox:active {
+            transform: scale(0.9);
+        }
+
+        .set-checkbox.checked {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .set-checkbox svg {
+            width: 20px;
+            height: 20px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .set-checkbox.checked svg {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .rest-timer {
+            margin-top: 24px;
+            padding: 28px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+        }
+
+        .rest-timer-display {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -2px;
+        }
+
+        .rest-timer-display.active {
+            color: var(--success);
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .timer-btn {
+            padding: 16px 32px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            box-shadow: var(--shadow);
+        }
+
+        .timer-btn:active {
+            transform: scale(0.95);
+        }
+
+        .timer-btn.secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+
+        .rest-day {
+            padding: 60px 24px;
+            text-align: center;
+        }
+
+        .rest-day-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .rest-day-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .rest-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rest-option {
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            text-align: left;
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .core-circuit {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .circuit-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .circuit-exercise {
+            padding: 16px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .circuit-name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .circuit-reps {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .exercise-card {
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+        }
+
+        .exercise-card:nth-child(1) { animation-delay: 0.05s; }
+        .exercise-card:nth-child(2) { animation-delay: 0.1s; }
+        .exercise-card:nth-child(3) { animation-delay: 0.15s; }
+        .exercise-card:nth-child(4) { animation-delay: 0.2s; }
+        .exercise-card:nth-child(5) { animation-delay: 0.25s; }
+        .exercise-card:nth-child(6) { animation-delay: 0.3s; }
+        .exercise-card:nth-child(7) { animation-delay: 0.35s; }
+        .exercise-card:nth-child(8) { animation-delay: 0.4s; }
+
+        .fab {
+            position: fixed;
+            bottom: calc(32px + env(safe-area-inset-bottom));
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+        }
+
+        .fab.show {
+            display: flex;
+        }
+
+        .fab:active {
+            transform: scale(0.9);
+        }
+
+        .fab svg {
+            width: 28px;
+            height: 28px;
+            stroke: white;
+            stroke-width: 2.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="login-title">Atlético</div>
+            <div class="login-subtitle">Tu programa de entrenamiento personalizado</div>
+            
+            <div class="error-message" id="errorMessage"></div>
+            
+            <input type="email" class="login-input" id="emailInput" placeholder="Email">
+            <input type="password" class="login-input" id="passwordInput" placeholder="Contraseña">
+            
+            <button class="login-btn" id="loginBtn">Iniciar Sesión</button>
+            <button class="login-btn secondary" id="registerBtn">Crear Cuenta</button>
+            
+            <div style="text-align: center; margin-top: 16px; font-size: 13px; color: var(--text-tertiary);">
+                Tus datos se guardan de forma segura en Firebase
+            </div>
+        </div>
+    </div>
+
+    <div class="header" style="display: none;" id="mainHeader">
+        <div class="header-content">
+            <div class="menu-icon" id="logoutBtn">
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+                <div class="menu-line"></div>
+            </div>
+            <div class="header-title">Atlético</div>
+            <div class="profile-icon" id="profileIcon">A</div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="day-info" id="dayInfo">
+            <div class="day-label">LUNES • SEMANA 1</div>
+            <div class="day-title">Tren Superior<br>Push</div>
+            <div class="day-subtitle">Empuje • 7 ejercicios • ~60 min</div>
+        </div>
+
+        <div class="week-selector" id="weekSelector">
+            <div class="day-pill active" data-day="1">Lunes</div>
+            <div class="day-pill" data-day="2">Martes</div>
+            <div class="day-pill" data-day="3">Miércoles</div>
+            <div class="day-pill" data-day="4">Jueves</div>
+            <div class="day-pill" data-day="5">Viernes</div>
+            <div class="day-pill" data-day="6">Sábado</div>
+            <div class="day-pill" data-day="7">Domingo</div>
+        </div>
+
+        <div id="exerciseContent"></div>
+    </div>
+
+    <div class="fab" id="fab">
+        <svg viewBox="0 0 24 24" fill="none">
+            <path d="M9 11l3 3L22 4" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+
+    <script src="workout-data.js"></script>
+    <script src="app.js"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getDatabase, ref, set, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAhPYlp2f6hHWUIdk5NWdOqxxbVwHZtDAM",
+            authDomain: "app-atletico-1a0de.firebaseapp.com",
+            databaseURL: "https://app-atletico-1a0de-default-rtdb.firebaseio.com",
+            projectId: "app-atletico-1a0de",
+            storageBucket: "app-atletico-1a0de.firebasestorage.app",
+            messagingSenderId: "699120110206",
+            appId: "1:699120110206:web:4628aebeacdb388dc5662f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        let currentUser = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainHeader').style.display = 'block';
+                document.getElementById('mainContent').classList.add('show');
+                document.getElementById('fab').classList.add('show');
+                
+                const initial = user.email.charAt(0).toUpperCase();
+                document.getElementById('profileIcon').textContent = initial;
+                
+                loadUserData(user.uid);
+                if (typeof changeDay === 'function') {
+                    changeDay(1);
+                }
+            } else {
+                currentUser = null;
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('mainHeader').style.display = 'none';
+                document.getElementById('mainContent').classList.remove('show');
+                document.getElementById('fab').classList.remove('show');
+            }
+        });
+
+        function loadUserData(userId) {
+            const userRef = ref(database, `users/${userId}/workouts`);
+            onValue(userRef, (snapshot) => {
+                const data = snapshot.val();
+                window.workoutSetsData = data || {};
+            });
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+            const errorMsg = document.getElementById('errorMessage');
+            errorMsg.classList.remove('show');
+
+            if (!email || !password) {
+                errorMsg.textContent = 'Por favor ingresa email y contraseña';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                let message = 'Error al iniciar sesión';
+                if (error.code === 'auth/invalid-email') message = 'Email inválido';
+                if (error.code === 'auth/user-not-found') message = 'Usuario no encontrado';
+                if (error.code === 'auth/wrong-password') message = 'Contraseña incorrecta';
+                if (error.code === 'auth/invalid-credential') message = 'Credenciales inválidas';
+                errorMsg.textContent = message;
+                errorMsg.classList.add('show');
+            }
+        }
+
+        async function handleRegister() {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+            const errorMsg = document.getElementById('errorMessage');
+            errorMsg.classList.remove('show');
+
+            if (!email || !password) {
+                errorMsg.textContent = 'Por favor ingresa email y contraseña';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            if (password.length < 6) {
+                errorMsg.textContent = 'La contraseña debe tener al menos 6 caracteres';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                let message = 'Error al crear cuenta';
+                if (error.code === 'auth/email-already-in-use') message = 'Este email ya está registrado';
+                if (error.code === 'auth/invalid-email') message = 'Email inválido';
+                if (error.code === 'auth/weak-password') message = 'Contraseña muy débil';
+                errorMsg.textContent = message;
+                errorMsg.classList.add('show');
+            }
+        }
+
+        async function handleLogout() {
+            if (confirm('¿Cerrar sesión?')) {
+                await signOut(auth);
+            }
+        }
+
+        window.saveSetData = async (exerciseKey, setNumber, field, value) => {
+            if (!currentUser) return;
+            const userId = currentUser.uid;
+            const setPath = `users/${userId}/workouts/${exerciseKey}/set${setNumber}/${field}`;
+            await set(ref(database, setPath), value);
+        };
+
+        window.saveSetComplete = async (exerciseKey, setNumber, completed) => {
+            if (!currentUser) return;
+            const userId = currentUser.uid;
+            const setPath = `users/${userId}/workouts/${exerciseKey}/set${setNumber}/completed`;
+            await set(ref(database, setPath), completed);
+        };
+
+        document.getElementById('loginBtn').addEventListener('click', handleLogin);
+        document.getElementById('registerBtn').addEventListener('click', handleRegister);
+        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        // Day selector event listeners
+        document.querySelectorAll('.day-pill').forEach(pill => {
+            pill.addEventListener('click', (e) => {
+                const day = parseInt(e.target.dataset.day);
+                if (typeof changeDay === 'function') {
+                    changeDay(day);
+                }
+            });
+        });
+
+        // Toggle warmup section
+        window.toggleWarmupSection = (sectionId) => {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.toggle('expanded');
+            }
+        };
+    </script>
+</body>
+</html>
